@@ -32,9 +32,9 @@ COPY requirements.txt .
 RUN pip install --upgrade pip setuptools wheel
 
 # -------------------------------
-# Install dependencies (needed for collectstatic)
+# Build wheels
 # -------------------------------
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps -r requirements.txt
 
 # -------------------------------
 # Copy project code and collect static files
@@ -42,7 +42,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 WORKDIR /app
 COPY . .
 
-# Run collectstatic
+# Run collectstatic in builder
 RUN python manage.py collectstatic --noinput
 
 # ===============================
@@ -54,7 +54,7 @@ FROM python:3.11-slim AS runtime
 # Environment
 # -------------------------------
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONOTWRITEBYTECODE=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
     DJANGO_SETTINGS_MODULE=udemyclone.settings
 
 WORKDIR /app
@@ -75,9 +75,11 @@ RUN useradd -m -d /app -s /bin/bash vinay \
 USER vinay
 
 # -------------------------------
-# Copy installed packages from builder
+# Copy wheel files from builder and install
 # -------------------------------
-COPY --from=builder /usr/local /usr/local
+COPY --from=builder /install/*.whl /install/
+RUN pip install --no-cache-dir /install/* \
+    && rm -rf /install
 
 # -------------------------------
 # Copy app code (including static files) from builder
@@ -90,7 +92,7 @@ COPY --from=builder /app /app
 EXPOSE 8000
 
 # -------------------------------
-# Run Gunicorn
+# Run Gunicorn (pinned version recommended)
 # -------------------------------
 # Make sure gunicorn==21.2.0 is in requirements.txt
 CMD ["gunicorn", "udemyclone.wsgi:application", "--bind", "0.0.0.0:8000", "--workers=4", "--threads=2"]
