@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    container_name: django_udemy
+    ports:
+      - "8009:8000"
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3       # Persist SQLite DB
+      - ./static:/app/static               # Persist static files
+    environment:
+      - DJANGO_SETTINGS_MODULE=udemyclone.settings
+      - PYTHONUNBUFFERED=1
+    restart: always
