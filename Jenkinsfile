@@ -46,15 +46,32 @@ stage('trivy fs scan') {
     steps {
         script {
             sh '''
-            echo "Workspace:"
-            echo $WORKSPACE
-            ls -l $WORKSPACE
-
-docker run --rm \
-  -v /var/jenkins_home/workspace/udemyclone:/app \
-  -w /app \
-  aquasec/trivy:0.69.3 fs .
-
+            # Get the actual host path (where Jenkins workspace lives on the host)
+            HOST_WORKSPACE=$(pwd)
+            echo "Host workspace: ${HOST_WORKSPACE}"
+            
+            # Check if path exists
+            if [ ! -d "${HOST_WORKSPACE}" ]; then
+                echo "ERROR: Workspace path not found!"
+                exit 1
+            fi
+            
+            echo "Files in workspace:"
+            ls -la ${HOST_WORKSPACE}
+            
+            # Run Trivy with the host path
+            docker run --rm \
+              -v ${HOST_WORKSPACE}:/app \
+              -w /app \
+              aquasec/trivy:0.69.3 fs . \
+              --scanners vuln \
+              --severity HIGH,CRITICAL \
+              --format json \
+              --output /app/trivy-fs-report.json
+            
+            echo "Scan completed. Report:"
+            ls -la ${HOST_WORKSPACE}/trivy-fs-report.json
+            cat ${HOST_WORKSPACE}/trivy-fs-report.json || echo "No report generated"
             '''
         }
     }
