@@ -55,7 +55,7 @@ pipeline {
                           --severity HIGH,CRITICAL \
                           --no-progress \
                           --format template \
-                          --template "@/contrib/html.tpl" \
+                          --template "@/usr/local/share/trivy/templates/html.tpl" \
                           -o /output/trivy-fs-report.html \
                           --exit-code 0
                         
@@ -97,7 +97,7 @@ pipeline {
                       --severity HIGH,CRITICAL \
                       --no-progress \
                       --format template \
-                      --template "@/contrib/html.tpl" \
+                     --template "@/usr/local/share/trivy/templates/html.tpl" \
                       -o /output/trivy-image-report.html \
                       --exit-code 0
         
