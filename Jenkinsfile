@@ -70,7 +70,8 @@ stage('trivy fs scan') {
 
             echo "FS scan output:"
             ls -l trivy-fs-report.json
-            cat trivy-fs-report.json | jq '.' || cat trivy-fs-report.json
+            echo "Report contents:"
+            cat trivy-fs-report.json
             '''
         }
     }
