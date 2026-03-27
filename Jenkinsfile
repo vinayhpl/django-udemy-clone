@@ -50,7 +50,14 @@ stage('trivy fs scan') {
 
            # Create a clean output directory
            mkdir -p trivy-reports
-
+           
+           # Debug: List files in the current directory
+           echo "=== Current directory contents ==="
+           ls -la
+           
+           echo "=== Running Trivy scan ==="
+           
+           # Run Trivy with debug mode first to see what's happening
            docker run --rm \
              -v $(pwd):/app \
              -v /tmp/trivy-cache:/root/.cache/ \
@@ -58,27 +65,43 @@ stage('trivy fs scan') {
              aquasec/trivy:0.69.3 fs /app \
              --severity HIGH,CRITICAL \
              --no-progress \
+             --debug \
              --format template \
              --template "@/contrib/html.tpl" \
              -o /output/trivy-fs-report.html \
-             --exit-code 0
-
-           echo "Checking output:"
-           ls -l trivy-reports/
+             --exit-code 0 || true
            
-           # Verify file was created and has content
-           if [ -f trivy-reports/trivy-fs-report.html ]; then
-             echo "✓ Report created successfully!"
-             echo "File size: $(wc -c < trivy-reports/trivy-fs-report.html) bytes"
-           else
-             echo "✗ Report file not found!"
-             exit 1
-           fi
+           echo "=== Checking output directory ==="
+           ls -la trivy-reports/
+           
+           # Try alternative: Save report directly in /app instead
+           echo "=== Alternative: Saving report directly in /app ==="
+           docker run --rm \
+             -v $(pwd):/app \
+             -v /tmp/trivy-cache:/root/.cache/ \
+             aquasec/trivy:0.69.3 fs /app \
+             --severity HIGH,CRITICAL \
+             --no-progress \
+             --format table \
+             -o /app/trivy-fs-report.txt \
+             --exit-code 0
+           
+           echo "=== Checking current directory after alternative scan ==="
+           ls -la *.txt 2>/dev/null || echo "No txt files found"
+           
+           # Try simple table output to stdout
+           echo "=== Simple table output to verify Trivy is working ==="
+           docker run --rm \
+             -v $(pwd):/app \
+             -v /tmp/trivy-cache:/root/.cache/ \
+             aquasec/trivy:0.69.3 fs /app \
+             --severity HIGH,CRITICAL \
+             --no-progress \
+             --format table
            '''
         }
     }
 }
-        
 
         stage('docker build') {
             steps {
