@@ -44,16 +44,18 @@ pipeline {
 
 
 
-        stage('trivy fs scan') {
+stage('trivy fs scan') {
     steps {
         script {
            sh '''
            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
+            echo "PWD is: $PWD"
+
             docker run --rm \
-              -v $(pwd):/app \
+              -v "$PWD":/app \
+              -v "$PWD":/output \
               -v /tmp/trivy-cache:/root/.cache/ \
-              -v $(pwd):/output \
               aquasec/trivy:0.69.3 fs /app \
               --severity HIGH,CRITICAL \
               --no-progress \
@@ -62,8 +64,8 @@ pipeline {
               -o /output/trivy-fs-report.html \
               --exit-code 0
 
-            echo "Checking output:"
-            ls -l /output
+            echo "Files in workspace:"
+            ls -l "$PWD"
             '''
         }
     }
