@@ -48,21 +48,24 @@ stage('trivy fs scan') {
            sh '''
            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
-            docker run --rm \
-              -v "$PWD":/app \
-              -v "$PWD":/output \
-              -v /tmp/trivy-cache:/root/.cache/ \
-              aquasec/trivy:0.69.3 fs /app \
-              --severity HIGH,CRITICAL \
-              --no-progress \
-              --format template \
-              --template "@contrib/html.tpl" \
-              -o /output/trivy-fs-report.html \
-              --exit-code 0
+           # Create a clean output directory
+           mkdir -p trivy-reports
 
-            echo "Checking output:"
-            ls -l "$PWD"
-            '''
+           docker run --rm \
+             -v $(pwd):/app \
+             -v /tmp/trivy-cache:/root/.cache/ \
+             -v $(pwd)/trivy-reports:/output \
+             aquasec/trivy:0.69.3 fs /app \
+             --severity HIGH,CRITICAL \
+             --no-progress \
+             --format template \
+             --template "@contrib/html.tpl" \
+             -o /output/trivy-fs-report.html \
+             --exit-code 0
+
+           echo "Checking output:"
+           ls -l trivy-reports/
+           '''
         }
     }
 }
