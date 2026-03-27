@@ -153,7 +153,7 @@ stage('trivy image scan') {
 
 post {
     always {
-        archiveArtifacts artifacts: 'trivy-*-report.html', fingerprint: true, allowEmptyArchive: true
+        archiveArtifacts artifacts: 'trivy-*-report.*', fingerprint: true, allowEmptyArchive: true
         cleanWs()
     }
 }
