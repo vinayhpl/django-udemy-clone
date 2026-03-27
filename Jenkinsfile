@@ -46,6 +46,7 @@ pipeline {
                 steps {
                     script {
                        sh '''
+                       echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
                         docker run --rm \
                           -v $(pwd):/app \
                           -v /tmp/trivy-cache:/root/.cache/ \
@@ -82,7 +83,8 @@ pipeline {
             stage('trivy image scan') {
                 steps {
                     script {
-                                   sh '''
+                   sh '''
+                   echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
                     echo "Workspace: $(pwd)"
                     
                     docker run --rm \
