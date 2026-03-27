@@ -50,7 +50,7 @@ pipeline {
             
                         docker run --rm \
                           -v $(pwd):/app \
-                          -v trivy-cache:/root/.cache/ \
+                          -v /tmp/trivy-cache:/root/.cache/ \
                           -v $(pwd):/output \
                           aquasec/trivy:0.69.3 fs /app \
                           --severity HIGH,CRITICAL \
@@ -86,7 +86,7 @@ pipeline {
             
                         docker run --rm \
                           -v /var/run/docker.sock:/var/run/docker.sock \
-                          -v trivy-cache:/root/.cache/ \
+                          -v /tmp/trivy-cache:/root/.cache/ \
                           -v $(pwd):/output \
                           aquasec/trivy:0.69.3 image \
                           $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
@@ -141,21 +141,10 @@ pipeline {
 }
 }
 
-   post {
-    // success {
-    //     slackSend channel: '#devops-logs',
-    //               color: 'good',
-    //               message: "✅ SUCCESS: Build #${currentBuild.currentResult} for ${env.JOB_NAME}: ${env.BUILD_NUMBER}"
-    // }
-    // failure {
-    //     slackSend channel: '#devops-logs',
-    //               color: 'danger',
-    //               message: "❌ FAILURE: Build #${currentBuild.currentResult} for ${env.JOB_NAME}: ${env.BUILD_NUMBER}"
-    // }
-always {
-    cleanWs(
-        patterns: [[pattern: 'trivy-*.html', type: 'EXCLUDE']]
-    )
-}
+post {
+    always {
+        archiveArtifacts artifacts: 'trivy-*.html', fingerprint: true
+        cleanWs()
+    }
 }
 }
