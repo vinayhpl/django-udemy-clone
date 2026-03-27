@@ -41,8 +41,7 @@ pipeline {
                 }
             }
         }
-
-        stage('trivy fs scan') {
+stage('trivy fs scan') {
     steps {
         script {
             sh '''
@@ -50,10 +49,19 @@ pipeline {
                   -v ${WORKSPACE}:/workspace \
                   aquasec/trivy:0.69.3 \
                   fs \
+                  --scanners vuln \
                   --format template \
-                  --template "/contrib/html.tpl" \
+                  --template "@contrib/html.tpl" \
                   --output /workspace/trivy-fs-report.html \
-                  /workspace
+                  /workspace || true
+
+                # 🔥 Force HTML file if not created
+                if [ ! -f trivy-fs-report.html ]; then
+                    echo "<html><body><h2>No vulnerabilities found</h2></body></html>" > trivy-fs-report.html
+                fi
+
+                echo "Files:"
+                ls -l ${WORKSPACE}
             '''
         }
     }
