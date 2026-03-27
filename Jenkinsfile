@@ -26,7 +26,8 @@ pipeline {
             sh '''
             docker run --rm \
               -v $(pwd):/app \
-              aquasec/trivy:latest fs /app \
+              -v trivy-cache:/root/.cache/ \
+              aquasec/trivy:canary fs /app \
               --severity HIGH,CRITICAL \
               --no-progress \
               --exit-code 0
@@ -49,13 +50,14 @@ pipeline {
             }
         }
 
-        stage('trivy image scan') {
+  stage('trivy image scan') {
     steps {
         script {
             sh '''
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              aquasec/trivy:latest image \
+              -v trivy-cache:/root/.cache/ \
+              aquasec/trivy:canary image \
               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
               --severity HIGH,CRITICAL \
               --no-progress \
@@ -64,7 +66,6 @@ pipeline {
         }
     }
 }
-
         
 
         stage('docker push') {
