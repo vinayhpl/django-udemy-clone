@@ -55,11 +55,12 @@ stage('trivy fs scan') {
               aquasec/trivy:0.69.3 fs /app \
               --severity HIGH,CRITICAL \
               --no-progress \
-              --format html \
+              --format template \
+              --template "@contrib/html.tpl" \
               -o /output/trivy-fs-report.html \
               --exit-code 0
 
-            echo "Checking output"
+            echo "Checking output:"
             ls -l /output
             '''
         }
@@ -96,7 +97,8 @@ stage('trivy image scan') {
               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
               --severity HIGH,CRITICAL \
               --no-progress \
-              --format html \
+              --format template \
+              --template "@contrib/html.tpl" \
               -o /output/trivy-image-report.html \
               --exit-code 0
 
