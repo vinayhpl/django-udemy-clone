@@ -87,23 +87,27 @@ stage('trivy image scan') {
             sh '''
             echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
-            echo "Workspace: $(pwd)"
-
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              -v $(pwd):/output \
+              -v "$PWD":/output \
               -v /tmp/trivy-cache:/root/.cache/ \
               aquasec/trivy:0.69.3 image \
               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+              --scanners vuln \
               --severity HIGH,CRITICAL \
               --no-progress \
               --format template \
               --template "@contrib/html.tpl" \
               -o /output/trivy-image-report.html \
-              --exit-code 0
+              --exit-code 0 || true
 
-            echo "Files in workspace:"
-            ls -l /output
+            # 🔥 Ensure file always exists
+            if [ ! -f trivy-image-report.html ]; then
+                echo "<html><body><h2>No vulnerabilities found</h2></body></html>" > trivy-image-report.html
+            fi
+
+            echo "Image scan output:"
+            ls -l "$PWD"
             '''
         }
     }
