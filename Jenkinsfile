@@ -42,27 +42,19 @@ pipeline {
                 }
             }
         }
-
-        stage('trivy fs scan') {
+stage('trivy fs scan') {
     steps {
         script {
             sh '''
-            echo "=== Current Directory ==="
-            pwd
-            ls -la
-            
-            echo ""
-            echo "=== Check for requirements.txt ==="
-            cat requirements.txt 2>/dev/null || echo "requirements.txt not found"
-            
-            echo ""
-            echo "=== Running Trivy FS Scan ==="
+            echo "=== Running Trivy FS Scan with Python support ==="
             docker run --rm \
               -v $(pwd):/app \
               -w /app \
               aquasec/trivy:0.69.3 fs . \
               --scanners vuln \
-              --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+              --severity HIGH,CRITICAL \
+              --db-repository mirror.gcr.io/aquasec/trivy-db:2 \
+              --debug
             '''
         }
     }
