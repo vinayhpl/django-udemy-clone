@@ -1,11 +1,7 @@
-# ===============================
-# Stage 1: Builder
-# ===============================
+# Multi stage - Non ROOT user docker build 
+
 FROM python:3.11-slim AS builder
 
-# -------------------------------
-# Environment
-# -------------------------------
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -13,9 +9,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /install
 
-# -------------------------------
-# System deps for building packages
-# -------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
@@ -25,73 +18,39 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# -------------------------------
-# Copy requirements and upgrade pip tools
-# -------------------------------
 COPY requirements.txt .
 RUN pip install --upgrade pip setuptools wheel
 
-# -------------------------------
-# Install dependencies (needed for collectstatic)
-# -------------------------------
 RUN pip install --no-cache-dir -r requirements.txt
 
-# -------------------------------
-# Copy project code and collect static files
-# -------------------------------
 WORKDIR /app
 COPY . .
 
 # Run collectstatic
 RUN python manage.py collectstatic --noinput
 
-# ===============================
-# Stage 2: Runtime
-# ===============================
 FROM python:3.11-slim AS runtime
 
-# -------------------------------
-# Environment
-# -------------------------------
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONOTWRITEBYTECODE=1 \
     DJANGO_SETTINGS_MODULE=udemyclone.settings
 
 WORKDIR /app
 
-# -------------------------------
-# Runtime-only packages
-# -------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# -------------------------------
-# Create non-root user
-# -------------------------------
+# Create vinay user
 RUN useradd -m -d /app -s /bin/bash vinay \
     && chown -R vinay:vinay /app
 
 USER vinay
-
-# -------------------------------
-# Copy installed packages from builder
-# -------------------------------
 COPY --from=builder /usr/local /usr/local
 
-# -------------------------------
-# Copy app code (including static files) from builder
-# -------------------------------
 COPY --from=builder /app /app
 
-# -------------------------------
-# Expose port
-# -------------------------------
 EXPOSE 8000
 
-# -------------------------------
-# Run Gunicorn
-# -------------------------------
-# Make sure gunicorn==21.2.0 is in requirements.txt
 CMD ["gunicorn", "udemyclone.wsgi:application", "--bind", "0.0.0.0:8000", "--workers=4", "--threads=2"]
 
