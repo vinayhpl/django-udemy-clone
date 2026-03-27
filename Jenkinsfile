@@ -80,14 +80,16 @@ pipeline {
             }
         }
         
-            stage('trivy image scan') {
-                steps {
-                    script {
-                   sh '''
-                   echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+        stage('trivy image scan') {
+            steps {
+                script {
+                    sh '''
+                    echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+        
                     echo "Workspace: $(pwd)"
-                    
+        
                     docker run --rm \
+                      -v /var/run/docker.sock:/var/run/docker.sock \
                       -v $(pwd):/output \
                       -v /tmp/trivy-cache:/root/.cache/ \
                       aquasec/trivy:0.69.3 image \
@@ -98,13 +100,13 @@ pipeline {
                       --template "@/contrib/html.tpl" \
                       -o /output/trivy-image-report.html \
                       --exit-code 0
-                    
+        
                     echo "Files in workspace:"
                     ls -l $(pwd)
                     '''
-                    }
                 }
-            }   
+            }
+        } 
 
         stage('docker push') {
             steps {
