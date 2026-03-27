@@ -42,29 +42,29 @@ pipeline {
             }
         }
 
-            stage('trivy fs scan') {
-                steps {
-                    script {
-                       sh '''
-                       echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-                        docker run --rm \
-                          -v $(pwd):/app \
-                          -v /tmp/trivy-cache:/root/.cache/ \
-                          -v $(pwd):/output \
-                          aquasec/trivy:0.69.3 fs /app \
-                          --severity HIGH,CRITICAL \
-                          --no-progress \
-                          --format template \
-                          --template "@/usr/local/share/trivy/templates/html.tpl" \
-                          -o /output/trivy-fs-report.html \
-                          --exit-code 0
-                        
-                        echo "Checking output"
-                        ls -l
-                        '''
-                    }
-                }
-            }
+stage('trivy fs scan') {
+    steps {
+        script {
+           sh '''
+           echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+
+            docker run --rm \
+              -v $(pwd):/app \
+              -v /tmp/trivy-cache:/root/.cache/ \
+              -v $(pwd):/output \
+              aquasec/trivy:0.69.3 fs /app \
+              --severity HIGH,CRITICAL \
+              --no-progress \
+              --format html \
+              -o /output/trivy-fs-report.html \
+              --exit-code 0
+
+            echo "Checking output"
+            ls -l /output
+            '''
+        }
+    }
+}
         
 
         stage('docker build') {
@@ -80,33 +80,32 @@ pipeline {
             }
         }
         
-        stage('trivy image scan') {
-            steps {
-                script {
-                    sh '''
-                    echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-        
-                    echo "Workspace: $(pwd)"
-        
-                    docker run --rm \
-                      -v /var/run/docker.sock:/var/run/docker.sock \
-                      -v $(pwd):/output \
-                      -v /tmp/trivy-cache:/root/.cache/ \
-                      aquasec/trivy:0.69.3 image \
-                      $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
-                      --severity HIGH,CRITICAL \
-                      --no-progress \
-                      --format template \
-                     --template "@/usr/local/share/trivy/templates/html.tpl" \
-                      -o /output/trivy-image-report.html \
-                      --exit-code 0
-        
-                    echo "Files in workspace:"
-                    ls -l $(pwd)
-                    '''
-                }
-            }
-        } 
+stage('trivy image scan') {
+    steps {
+        script {
+            sh '''
+            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+
+            echo "Workspace: $(pwd)"
+
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v $(pwd):/output \
+              -v /tmp/trivy-cache:/root/.cache/ \
+              aquasec/trivy:0.69.3 image \
+              $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+              --severity HIGH,CRITICAL \
+              --no-progress \
+              --format html \
+              -o /output/trivy-image-report.html \
+              --exit-code 0
+
+            echo "Files in workspace:"
+            ls -l /output
+            '''
+        }
+    }
+}
 
         stage('docker push') {
             steps {
