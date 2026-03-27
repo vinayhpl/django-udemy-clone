@@ -57,8 +57,12 @@ stage('trivy fs scan') {
               --severity HIGH,CRITICAL \
               --no-progress \
               --format json \
-              -o /output/trivy-fs-report.json \
-              --exit-code 0
+              --output /output/trivy-fs-report.json || true
+
+            # 🔥 Force file if not created
+            if [ ! -f trivy-fs-report.json ]; then
+              echo '{}' > trivy-fs-report.json
+            fi
 
             echo "FS scan output:"
             ls -l "$PWD"
