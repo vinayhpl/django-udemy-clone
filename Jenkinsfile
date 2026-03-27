@@ -19,6 +19,21 @@ pipeline {
                 git branch: 'master',  url: 'https://github.com/vinayhpl/django-udemy-clone.git'
             }
         }
+
+        stage('trivy fs scan') {
+    steps {
+        script {
+            sh '''
+            docker run --rm \
+              -v $(pwd):/app \
+              aquasec/trivy:latest fs /app \
+              --severity HIGH,CRITICAL \
+              --no-progress \
+              --exit-code 0
+            '''
+        }
+    }
+}
         
 
         stage('docker build') {
@@ -33,6 +48,24 @@ pipeline {
                 }
             }
         }
+
+        stage('trivy image scan') {
+    steps {
+        script {
+            sh '''
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              aquasec/trivy:latest image \
+              $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+              --severity HIGH,CRITICAL \
+              --no-progress \
+              --exit-code 0
+            '''
+        }
+    }
+}
+
+        
 
         stage('docker push') {
             steps {
