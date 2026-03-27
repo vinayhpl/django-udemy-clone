@@ -20,6 +20,20 @@ pipeline {
             }
         }
 
+        stage('lint') {
+    steps {
+        script {
+            sh '''
+            echo "Installing lint dependencies..."
+            pip install flake8
+
+            echo "Running flake8..."
+            flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            '''
+        }
+    }
+}
+
         stage('trivy fs scan') {
     steps {
         script {
