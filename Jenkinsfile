@@ -1,0 +1,92 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_PATH = '/var/www/tummoc'
+        REMOTE_KEY = credentials('ssh_cred')
+        DOCKER_KEY = credentials('ghcr_cred')
+        DOCKER_HUB= credentials('dockerhub-cred')
+        REGISTRY = 'ghcr.io'
+        IMAGE_NAME = 'udemy-clone'
+        TAG = 'latest-demo'
+        VERSION_TAG = "${BUILD_NUMBER}-${JOB_NAME}"
+    }
+
+    stages {
+        stage('checkout') {
+            steps {
+                // repo is not private for assignment view && no dev test, stag, prod branches 
+                git branch: 'master',  url: 'https://github.com/vinayhpl/django-udemy-clone.git'
+            }
+        }
+        
+
+        stage('docker build') {
+            steps {
+                script {
+                    sh '''
+                    echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+                    DOCKER_BUILDKIT=1 docker build \
+                   -t $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+                   -t $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG .
+                    '''
+                }
+            }
+        }
+
+        stage('docker push') {
+            steps {
+                script {
+                    sh '''
+                        echo $DOCKER_KEY_PSW | docker login $REGISTRY -u $DOCKER_KEY_USR --password-stdin
+                        docker push $DOCKER_KEY_USR/$IMAGE_NAME:$TAG
+                        docker push $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG
+                    '''
+                }
+            }
+        }
+
+        stage('docker cleani') {
+            steps {
+                sh 'docker image prune -f'
+            }
+        }
+
+     stage('deploy') {
+    steps {
+        withCredentials([sshUserPrivateKey(
+            credentialsId: 'ssh_cred',
+            keyFileVariable: 'SSH_KEY',
+            usernameVariable: 'SSH_USER'
+        )]) {
+            sh '''
+            ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER << EOF
+                cd ${APP_PATH}
+                echo $DOCKER_KEY_PSW | docker login ${REGISTRY} -u $DOCKER_KEY_USR --password-stdin
+                docker compose pull
+                docker compose down
+                docker compose up -d
+                docker image prune -f
+          #  EOF
+            '''
+        }
+    }
+}
+}
+
+   post {
+    // success {
+    //     slackSend channel: '#devops-logs',
+    //               color: 'good',
+    //               message: "✅ SUCCESS: Build #${currentBuild.currentResult} for ${env.JOB_NAME}: ${env.BUILD_NUMBER}"
+    // }
+    // failure {
+    //     slackSend channel: '#devops-logs',
+    //               color: 'danger',
+    //               message: "❌ FAILURE: Build #${currentBuild.currentResult} for ${env.JOB_NAME}: ${env.BUILD_NUMBER}"
+    // }
+    always {
+        cleanWs()
+    }
+}
+}
