@@ -46,27 +46,19 @@ stage('trivy fs scan') {
     steps {
         script {
             sh '''
-            docker run --rm \
-              -v ${WORKSPACE}:/workspace \
-              -v /tmp/trivy-cache:/root/.cache/ \
-              aquasec/trivy:0.69.3 \
-              fs /workspace \
-              --scanners vuln \
-              --format template \
-              --template "@contrib/html.tpl" \
-              --output /workspace/trivy-fs-report.html || true
-
-            # ensure file always exists
-            if [ ! -f ${WORKSPACE}/trivy-fs-report.html ]; then
-                echo "<html><body><h2>No vulnerabilities found</h2></body></html>" > ${WORKSPACE}/trivy-fs-report.html
-            fi
-
-            echo "FS scan output:"
-            ls -l ${WORKSPACE}
+                docker run --rm \
+                  -v ${WORKSPACE}:/workspace \
+                  aquasec/trivy:0.69.3 \
+                  fs \
+                  --format template \
+                  --template "/contrib/html.tpl" \
+                  --output /workspace/trivy-fs-report.html \
+                  /workspace
             '''
         }
     }
 }
+
 
         stage('docker build') {
             steps {
