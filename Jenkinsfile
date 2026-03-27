@@ -48,19 +48,32 @@ stage('trivy fs scan') {
            sh '''
            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
+           # Create a clean output directory
+           mkdir -p trivy-reports
+
            docker run --rm \
              -v $(pwd):/app \
              -v /tmp/trivy-cache:/root/.cache/ \
+             -v $(pwd)/trivy-reports:/output \
              aquasec/trivy:0.69.3 fs /app \
              --severity HIGH,CRITICAL \
              --no-progress \
              --format template \
-             --template "@contrib/html.tpl" \
-             -o /app/trivy-fs-report.html \
+             --template "@/contrib/html.tpl" \
+             -o /output/trivy-fs-report.html \
              --exit-code 0
 
            echo "Checking output:"
-           ls -l trivy-fs-report.html
+           ls -l trivy-reports/
+           
+           # Verify file was created and has content
+           if [ -f trivy-reports/trivy-fs-report.html ]; then
+             echo "✓ Report created successfully!"
+             echo "File size: $(wc -c < trivy-reports/trivy-fs-report.html) bytes"
+           else
+             echo "✗ Report file not found!"
+             exit 1
+           fi
            '''
         }
     }
