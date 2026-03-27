@@ -49,9 +49,9 @@ stage('trivy fs scan') {
            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
             docker run --rm \
-              -v $(pwd):/app \
+              -v "$PWD":/app \
+              -v "$PWD":/output \
               -v /tmp/trivy-cache:/root/.cache/ \
-              -v $(pwd):/output \
               aquasec/trivy:0.69.3 fs /app \
               --severity HIGH,CRITICAL \
               --no-progress \
@@ -61,7 +61,7 @@ stage('trivy fs scan') {
               --exit-code 0
 
             echo "Checking output:"
-            ls -l /output
+            ls -l "$PWD"
             '''
         }
     }
