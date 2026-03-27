@@ -57,6 +57,7 @@ stage('trivy fs scan') {
               -v "$PWD":/output \
               -v /tmp/trivy-cache:/root/.cache/ \
               aquasec/trivy:0.69.3 fs /app \
+              --scanners vuln \
               --severity HIGH,CRITICAL \
               --no-progress \
               --format template \
