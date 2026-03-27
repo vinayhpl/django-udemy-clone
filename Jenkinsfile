@@ -94,17 +94,11 @@ stage('trivy image scan') {
               aquasec/trivy:0.69.3 image \
               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
               --scanners vuln \
-              --severity HIGH,CRITICAL \
+              --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
               --no-progress \
               --format template \
               --template "@contrib/html.tpl" \
-              -o /output/trivy-image-report.html \
-              --exit-code 0 || true
-
-            # 🔥 Ensure file always exists
-            if [ ! -f trivy-image-report.html ]; then
-                echo "<html><body><h2>No vulnerabilities found</h2></body></html>" > trivy-image-report.html
-            fi
+              -o /output/trivy-image-report.html
 
             echo "Image scan output:"
             ls -l "$PWD"
