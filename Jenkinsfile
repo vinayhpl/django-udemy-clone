@@ -45,9 +45,7 @@ pipeline {
             stage('trivy fs scan') {
                 steps {
                     script {
-                        sh '''
-                        echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-            
+                       sh '''
                         docker run --rm \
                           -v $(pwd):/app \
                           -v /tmp/trivy-cache:/root/.cache/ \
@@ -59,6 +57,9 @@ pipeline {
                           --template "@/contrib/html.tpl" \
                           -o /output/trivy-fs-report.html \
                           --exit-code 0
+                        
+                        echo "Checking output files..."
+                        ls -l
                         '''
                     }
                 }
@@ -77,7 +78,7 @@ pipeline {
                 }
             }
         }
-
+        
             stage('trivy image scan') {
                 steps {
                     script {
@@ -96,10 +97,13 @@ pipeline {
                           --template "@/contrib/html.tpl" \
                           -o /output/trivy-image-report.html \
                           --exit-code 0
+            
+                        echo "Checking output files..."
+                        ls -l
                         '''
                     }
                 }
-            }    
+            }   
 
         stage('docker push') {
             steps {
@@ -143,7 +147,7 @@ pipeline {
 
 post {
     always {
-        archiveArtifacts artifacts: 'trivy-*.html', fingerprint: true
+        archiveArtifacts artifacts: 'trivy-*-report.html', fingerprint: true, allowEmptyArchive: true
         cleanWs()
     }
 }
