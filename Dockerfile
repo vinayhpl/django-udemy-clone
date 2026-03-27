@@ -1,4 +1,4 @@
-# Multi stage - Non ROOT user docker build 
+# Multi stage - Non ROOT user docker build and gunicorn, whitenoise to better request serving
 
 FROM python:3.11-slim AS builder
 
@@ -26,7 +26,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 WORKDIR /app
 COPY . .
 
-# Run collectstatic
 RUN python manage.py collectstatic --noinput
 
 FROM python:3.11-slim AS runtime
