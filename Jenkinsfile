@@ -57,9 +57,9 @@ stage('trivy fs scan') {
               --severity HIGH,CRITICAL \
               --no-progress \
               --format json \
-              --output /output/trivy-fs-report.json || true
+              --output /output/trivy-fs-report.json
 
-            # 🔥 Force file if not created
+            # 🔥 Force file if not created (in case of no vulnerabilities)
             if [ ! -f trivy-fs-report.json ]; then
               echo '{}' > trivy-fs-report.json
             fi
