@@ -48,15 +48,14 @@ stage('trivy fs scan') {
             sh '''
                 echo "Files in workspace:"
                 
-                docker run --rm \
-                  -v ${WORKSPACE}:/workspace \
-                  aquasec/trivy:0.69.3 \
-                  fs \
-                  --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
-                  --format template \
-                  --template "/contrib/html.tpl" \
-                  --output /workspace/trivy-fs-report.html \
-                  /workspace
+             docker run --rm \
+  -v $(pwd):/app \
+  -v $(pwd):/output \
+  aquasec/trivy:0.69.3 fs /app \
+  --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
+  --format template \
+  --template "@/contrib/html.tpl" \
+  -o /output/trivy-fs-report.html
                   ls -l
             '''
         }
