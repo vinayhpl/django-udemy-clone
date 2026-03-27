@@ -47,11 +47,11 @@ stage('trivy fs scan') {
         script {
             sh '''
             echo "Workspace:"
-            pwd
-            ls -l
+            echo $WORKSPACE
+            ls -l $WORKSPACE
 
             docker run --rm \
-              -v $(pwd):/app \
+              -v $WORKSPACE:/app \
               -w /app \
               aquasec/trivy:0.69.3 fs .
 
@@ -59,7 +59,6 @@ stage('trivy fs scan') {
         }
     }
 }
-
 
 
         stage('docker build') {
