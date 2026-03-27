@@ -16,6 +16,7 @@ pipeline {
         stage('checkout') {
             steps {
                 // repo is not private for assignment view && no dev test, stag, prod branches 
+                 cleanWs()
                 git branch: 'master',  url: 'https://github.com/vinayhpl/django-udemy-clone.git'
             }
         }
