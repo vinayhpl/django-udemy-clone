@@ -58,7 +58,7 @@ pipeline {
                           -o /output/trivy-fs-report.html \
                           --exit-code 0
                         
-                        echo "Checking output files..."
+                        echo "Checking output"
                         ls -l
                         '''
                     }
@@ -98,7 +98,7 @@ pipeline {
                           -o /output/trivy-image-report.html \
                           --exit-code 0
             
-                        echo "Checking output files..."
+                        echo "Checking output"
                         ls -l
                         '''
                     }
