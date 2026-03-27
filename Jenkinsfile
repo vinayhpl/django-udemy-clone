@@ -45,24 +45,20 @@ pipeline {
 stage('trivy fs scan') {
     steps {
         script {
-            sh '''
-                echo "Files in workspace:"
-                echo "$(pwd)"
-                echo "Files in workspace:"
-
-                cd "$(pwd)"
-                ls -l
-                
-             docker run --rm \
+sh '''
+docker run --rm \
   -v $(pwd):/app \
   -v $(pwd):/output \
-  aquasec/trivy:0.69.3 fs /app \
+  -w /app \
+  aquasec/trivy:0.69.3 fs . \
   --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
   --format template \
   --template "@/contrib/html.tpl" \
   -o /output/trivy-fs-report.html
-                  ls -l
-            '''
+
+echo "After scan:"
+ls -l
+'''
         }
     }
 }
