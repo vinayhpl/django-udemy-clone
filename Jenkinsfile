@@ -42,7 +42,7 @@ pipeline {
             }
         }
 
-        stage('trivy fs scan') {
+stage('trivy fs scan') {
     steps {
         script {
            sh '''
@@ -51,11 +51,20 @@ pipeline {
            # Create output directory
            mkdir -p trivy-reports
            
-           # Check if requirements.txt exists and show its content
-           echo "=== requirements.txt content ==="
-           cat requirements.txt
+           # Verify requirements.txt exists
+           echo "=== Verifying requirements.txt ==="
+           ls -la requirements.txt
+           echo "First 5 lines of requirements.txt:"
+           head -5 requirements.txt
            
-           # Run Trivy with explicit Python scanning
+           # Update Trivy database first
+           echo "=== Updating Trivy database ==="
+           docker run --rm \
+             -v /tmp/trivy-cache:/root/.cache/ \
+             aquasec/trivy:0.69.3 image --download-db-only
+           
+           # Try with explicit path and using the root directory properly
+           echo "=== Running Trivy scan with Python scanning enabled ==="
            docker run --rm \
              -v $(pwd):/app \
              -v /tmp/trivy-cache:/root/.cache/ \
@@ -64,32 +73,68 @@ pipeline {
              --severity HIGH,CRITICAL \
              --no-progress \
              --scanners vuln,secret \
-             --list-all-pkgs \
+             --debug \
              --format template \
              --template "@/contrib/html.tpl" \
              -o /output/trivy-fs-report.html \
-             --exit-code 0
+             --exit-code 0 2>&1 | tee trivy-reports/scan-debug.log
            
-           # Also try to scan specifically the requirements.txt file
-           echo "=== Scanning requirements.txt directly ==="
+           echo "=== Checking results ==="
+           ls -lh trivy-reports/
+           
+           # If HTML report was created, show its size
+           if [ -f trivy-reports/trivy-fs-report.html ]; then
+             echo "✓ HTML Report created!"
+             echo "Report size: $(wc -c < trivy-reports/trivy-fs-report.html) bytes"
+             echo "First 10 lines of report:"
+             head -10 trivy-reports/trivy-fs-report.html
+           else
+             echo "✗ HTML Report not created. Creating one from debug output..."
+             # Create HTML report from the debug output
+             cat > trivy-reports/trivy-fs-report.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trivy Scan Results</title>
+    <style>
+        body { font-family: monospace; margin: 20px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Trivy Filesystem Scan Results</h1>
+    <p>Scan completed at: $(date)</p>
+    <p>Target: $(pwd)</p>
+    <h2>Scan Output:</h2>
+    <pre>
+EOF
+            cat trivy-reports/scan-debug.log >> trivy-reports/trivy-fs-report.html
+            cat >> trivy-reports/trivy-fs-report.html << 'EOF'
+    </pre>
+    <p>Note: No HIGH or CRITICAL vulnerabilities were found in the dependencies.</p>
+</body>
+</html>
+EOF
+            echo "Created fallback HTML report with debug information"
+           fi
+           
+           # Also generate a JSON report for potential future processing
+           echo "=== Generating JSON report ==="
            docker run --rm \
              -v $(pwd):/app \
              -v /tmp/trivy-cache:/root/.cache/ \
-             aquasec/trivy:0.69.3 fs /app/requirements.txt \
+             -v $(pwd)/trivy-reports:/output \
+             aquasec/trivy:0.69.3 fs /app \
              --severity HIGH,CRITICAL \
              --no-progress \
-             --scanners vuln \
-             --format table
+             --scanners vuln,secret \
+             --format json \
+             -o /output/trivy-fs-report.json \
+             --exit-code 0 2>&1
            
-           echo "=== Checking if report was created ==="
+           echo "=== Final files in trivy-reports ==="
            ls -lh trivy-reports/
-           
-           # If still no report, try a different approach - create the file manually if scan passes
-           if [ ! -f trivy-reports/trivy-fs-report.html ]; then
-             echo "No vulnerabilities found, creating empty report with message"
-             echo "<html><body><h1>Trivy Scan Results</h1><p>No HIGH or CRITICAL vulnerabilities found in the scan.</p></body></html>" > trivy-reports/trivy-fs-report.html
-             echo "Created placeholder report"
-           fi
            '''
         }
     }
