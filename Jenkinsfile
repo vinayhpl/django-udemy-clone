@@ -47,7 +47,11 @@ stage('trivy fs scan') {
         script {
             sh '''
                 echo "Files in workspace:"
-                echo " $(pwd)"
+                echo "$(pwd)"
+                echo "Files in workspace:"
+
+                cd "$(pwd)"
+                ls -l
                 
              docker run --rm \
   -v $(pwd):/app \
