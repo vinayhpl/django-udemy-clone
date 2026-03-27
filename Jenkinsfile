@@ -48,9 +48,13 @@ stage('trivy fs scan') {
             sh '''
             echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
+            # Debug: Show current directory
+            echo "Current directory: $(pwd)"
+            echo "Contents: $(ls -la)"
+
             docker run --rm \
-              -v "$PWD":/app \
-              -v "$PWD":/output \
+              -v "$(pwd)":/app \
+              -v "$(pwd)":/output \
               -v /tmp/trivy-cache:/root/.cache/ \
               aquasec/trivy:0.69.3 fs /app \
               --scanners vuln \
@@ -59,13 +63,9 @@ stage('trivy fs scan') {
               --format json \
               --output /output/trivy-fs-report.json
 
-            # 🔥 Force file if not created (in case of no vulnerabilities)
-            if [ ! -f trivy-fs-report.json ]; then
-              echo '{}' > trivy-fs-report.json
-            fi
-
-            echo "FS scan output:"
-            ls -l "$PWD"
+            # Check if file exists
+            echo "After scan - checking for report:"
+            ls -la trivy-fs-report.json || echo "File not found"
             '''
         }
     }
