@@ -41,41 +41,24 @@ pipeline {
                 }
             }
         }
-stage('trivy fs scan') {
+
+        stage('trivy fs scan') {
     steps {
         script {
             sh '''
-            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-
-            # Run scan, capture exit code
-            set +e
-            docker run --rm \
-              -v "$PWD":/app \
-              -v "$PWD":/output \
-              -v /tmp/trivy-cache:/root/.cache/ \
-              aquasec/trivy:0.69.3 fs /app \
-              --scanners vuln \
-              --severity HIGH,CRITICAL \
-              --no-progress \
-              --format json \
-              --output /output/trivy-fs-report.json
-            SCAN_EXIT=$?
-            set -e
-
-            # If file wasn't created (no vulnerabilities or error), create empty
-            if [ ! -f trivy-fs-report.json ]; then
-              echo '{}' > trivy-fs-report.json
-              echo "Created empty report (no vulnerabilities or scan issue)"
-            fi
-
-            echo "FS scan output:"
-            ls -l trivy-fs-report.json
-            echo "Report contents:"
-            cat trivy-fs-report.json
+                docker run --rm \
+                  -v ${WORKSPACE}:/workspace \
+                  aquasec/trivy:0.69.3 \
+                  fs \
+                  --format template \
+                  --template "/contrib/html.tpl" \
+                  --output /workspace/trivy-fs-report.html \
+                  /workspace
             '''
         }
     }
 }
+
         stage('docker build') {
             steps {
                 script {
