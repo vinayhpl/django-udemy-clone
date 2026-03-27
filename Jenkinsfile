@@ -24,6 +24,7 @@ pipeline {
     steps {
         script {
             sh '''
+            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
             docker run --rm \
               -v $(pwd):/app \
               -v trivy-cache:/root/.cache/ \
@@ -54,6 +55,7 @@ pipeline {
     steps {
         script {
             sh '''
+            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
               -v trivy-cache:/root/.cache/ \
