@@ -152,8 +152,10 @@ pipeline {
     //               color: 'danger',
     //               message: "❌ FAILURE: Build #${currentBuild.currentResult} for ${env.JOB_NAME}: ${env.BUILD_NUMBER}"
     // }
-    always {
-        cleanWs()
-    }
+always {
+    cleanWs(
+        patterns: [[pattern: 'trivy-*.html', type: 'EXCLUDE']]
+    )
+}
 }
 }
