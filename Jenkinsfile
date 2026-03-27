@@ -41,23 +41,16 @@ pipeline {
                 }
             }
         }
-
 stage('trivy fs scan') {
     steps {
         script {
            sh '''
            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
-           # Create a clean output directory
+           # Create output directory
            mkdir -p trivy-reports
            
-           # Debug: List files in the current directory
-           echo "=== Current directory contents ==="
-           ls -la
-           
-           echo "=== Running Trivy scan ==="
-           
-           # Run Trivy with debug mode first to see what's happening
+           # Run Trivy with explicit language-specific scanners
            docker run --rm \
              -v $(pwd):/app \
              -v /tmp/trivy-cache:/root/.cache/ \
@@ -65,39 +58,41 @@ stage('trivy fs scan') {
              aquasec/trivy:0.69.3 fs /app \
              --severity HIGH,CRITICAL \
              --no-progress \
-             --debug \
+             --scanners vuln,secret \
              --format template \
              --template "@/contrib/html.tpl" \
              -o /output/trivy-fs-report.html \
-             --exit-code 0 || true
-           
-           echo "=== Checking output directory ==="
-           ls -la trivy-reports/
-           
-           # Try alternative: Save report directly in /app instead
-           echo "=== Alternative: Saving report directly in /app ==="
-           docker run --rm \
-             -v $(pwd):/app \
-             -v /tmp/trivy-cache:/root/.cache/ \
-             aquasec/trivy:0.69.3 fs /app \
-             --severity HIGH,CRITICAL \
-             --no-progress \
-             --format table \
-             -o /app/trivy-fs-report.txt \
              --exit-code 0
            
-           echo "=== Checking current directory after alternative scan ==="
-           ls -la *.txt 2>/dev/null || echo "No txt files found"
+           echo "Checking output:"
+           ls -lh trivy-reports/
            
-           # Try simple table output to stdout
-           echo "=== Simple table output to verify Trivy is working ==="
+           # Also create a JSON report for easier parsing
            docker run --rm \
              -v $(pwd):/app \
              -v /tmp/trivy-cache:/root/.cache/ \
+             -v $(pwd)/trivy-reports:/output \
              aquasec/trivy:0.69.3 fs /app \
              --severity HIGH,CRITICAL \
              --no-progress \
-             --format table
+             --scanners vuln,secret \
+             --format json \
+             -o /output/trivy-fs-report.json
+           
+           echo "Final output:"
+           ls -lh trivy-reports/
+           
+           # Display report summary
+           if [ -f trivy-reports/trivy-fs-report.html ]; then
+             echo "✓ HTML Report created successfully!"
+             echo "Report size: $(du -h trivy-reports/trivy-fs-report.html | cut -f1)"
+           else
+             echo "✗ Report still not created"
+           fi
+           
+           if [ -f trivy-reports/trivy-fs-report.json ]; then
+             echo "✓ JSON Report created successfully!"
+           fi
            '''
         }
     }
