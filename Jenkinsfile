@@ -50,10 +50,10 @@ stage('trivy fs scan') {
             echo $WORKSPACE
             ls -l $WORKSPACE
 
-            docker run --rm \
-              -v $WORKSPACE:/app \
-              -w /app \
-              aquasec/trivy:0.69.3 fs .
+docker run --rm \
+  -v /var/jenkins_home/workspace/udemyclone:/app \
+  -w /app \
+  aquasec/trivy:0.69.3 fs .
 
             '''
         }
