@@ -50,16 +50,18 @@ stage('trivy fs scan') {
             pwd
             ls -l
 
-            docker run --rm \
-              -v $(pwd):/app \
-              -v $(pwd):/output \
-              -w /app \
-              aquasec/trivy:0.69.3 fs . \
-              --scanners vuln \
-              --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
-              --format template \
-              --template "@/contrib/html.tpl" \
-              -o /output/trivy-fs-report.html
+           docker run --rm \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v /var/jenkins_home/workspace/udemyclone:/output \
+          -v /tmp/trivy-cache:/root/.cache/ \
+          aquasec/trivy:0.69.3 image \
+          $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+          --scanners vuln \
+          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
+          --no-progress \
+          --format template \
+          --template "@/contrib/html.tpl" \
+          -o /output/trivy-image-report.html
 
             echo "After scan:"
             ls -l
