@@ -63,7 +63,8 @@ stage('trivy fs scan') {
               --severity HIGH,CRITICAL \
               --no-progress \
               --format template \
-              --template "@/contrib/html.tpl" \
+          #    --template "@/contrib/html.tpl" \
+               --template "@/templates/trivy-modern.tpl" \
               -o /output/trivy-fs-report.html \
               --exit-code 0
 
