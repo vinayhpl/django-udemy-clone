@@ -1,6 +1,12 @@
 pipeline {
-    agent any
-
+  //  agent any
+    
+       agent {
+        docker {
+            image 'aquasec/trivy:0.69.3'
+        }
+    }
+    
     environment {
         APP_PATH = '/var/www/tummoc'
         REMOTE_KEY = credentials('ssh_cred')
@@ -59,29 +65,14 @@ pipeline {
 //         }
 //     }
 // }
-stage('Check file access via Trivy container') {
-    steps {
-        script {
-            sh '''
-            echo "=== Checking file access inside Trivy container ==="
-             ls -l
-             ls -ld /var/jenkins_home/workspace/udemyclone
-
-             echo "=== Checking file access inside Trivy container ==="
-             ls -ld  ${WORKSPACE}
-
-             echo "$(pwd)"
-
-            docker run --rm \
-              -v ./:/app \
-              -w /app \
-              --entrypoint /bin/sh \
-              aquasec/trivy:0.69.3 \
-              -c "ls -l && echo '--- requirements.txt ---' && cat requirements.txt"
-            '''
+stage('Trivy Scan') {
+            steps {
+                sh '''
+                ls -l
+                trivy fs .
+                '''
+            }
         }
-    }
-}
 
         stage('docker build') {
             steps {
