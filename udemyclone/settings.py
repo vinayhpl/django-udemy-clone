@@ -27,11 +27,6 @@ INSTALLED_APPS = [
     'courses',
     'cart',
 ]
-try:
-    import django_prometheus
-    INSTALLED_APPS = ['django_prometheus'] + INSTALLED_APPS
-except ImportError:
-    pass
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -46,7 +41,15 @@ MIDDLEWARE = [
 
 try:
     import django_prometheus
+
     INSTALLED_APPS = ['django_prometheus'] + INSTALLED_APPS
+
+    MIDDLEWARE = (
+        ['django_prometheus.middleware.PrometheusBeforeMiddleware']
+        + MIDDLEWARE +
+        ['django_prometheus.middleware.PrometheusAfterMiddleware']
+    )
+
 except ImportError:
     pass
 ROOT_URLCONF = 'udemyclone.urls'
