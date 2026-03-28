@@ -64,7 +64,7 @@ stage('trivy fs scan') {
               --severity HIGH,CRITICAL \
               --no-progress \
               --format template \
-               --template "@/templates/trivy-modern.tpl" \
+              --template "@/contrib/html.tpl"
               -o /output/trivy-fs-report.html \
               --exit-code 0
 
@@ -89,66 +89,36 @@ stage('trivy fs scan') {
             }
         }
         
-// stage('trivy image scan') {
-//     steps {
-//         script {
-//             sh '''
-//             echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+               stage('trivy image scan') {
+                   steps {
+                       script {
+                           sh '''
+                           echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+               
+                           echo "Workspace (container): $(pwd)"
+                           echo "Workspace (host): $DOCKER_JENKINS_HOME/workspace/$JOB_NAME"
+               
+                           docker run --rm \
+                             -v /var/run/docker.sock:/var/run/docker.sock \
+                             -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
+                             -v /tmp/trivy-cache:/root/.cache/ \
+                             aquasec/trivy:0.69.3 image \
+                             $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+                             --scanners vuln \
+                             --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
+                             --no-progress \
+                             --format template \
+                             --template "@contrib/html.tpl" \
+                             -o /output/trivy-image-report.html \
+                             --exit-code 0
+               
+                           echo "=== Report Details ==="
+                           ls -lh | grep trivy
+                           '''
+                       }
+                   }
+               }
 
-//             echo "Workspace (container): $(pwd)"
-//             echo "Workspace (host): $DOCKER_JENKINS_HOME/workspace/$JOB_NAME"
-
-//             docker run --rm \
-//               -v /var/run/docker.sock:/var/run/docker.sock \
-//               -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
-//               -v /tmp/trivy-cache:/root/.cache/ \
-//               aquasec/trivy:0.69.3 image \
-//               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
-//               --scanners vuln \
-//               --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
-//               --no-progress \
-//               --format template \
-//               --template "@contrib/html.tpl" \
-//               -o /output/trivy-image-report.html \
-//               --exit-code 0
-
-//             echo "=== Report Details ==="
-//             ls -lh | grep trivy
-//             '''
-//         }
-//     }
-// }
-
-       stage('trivy image scan') {
-    steps {
-        script {
-            sh '''
-            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-
-            echo "Workspace (container): $(pwd)"
-            echo "Workspace (host): $DOCKER_JENKINS_HOME/workspace/$JOB_NAME"
-
-            docker run --rm \
-              -v /var/run/docker.sock:/var/run/docker.sock \
-              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
-              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME/templates:/templates \
-              -v /tmp/trivy-cache:/root/.cache/ \
-              aquasec/trivy:0.69.3 image \
-              $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
-              --scanners vuln \
-              --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
-              --no-progress \
-              --format template \
-              --template "@/templates/trivy-modern.tpl" \
-              -o /output/trivy-image-report.html \
-              --exit-code 0
-
-            echo "=== Report Details ==="
-            ls -lh | grep trivy
-            '''
-        }
-    }
-}
 
         stage('docker push') {
             steps {
