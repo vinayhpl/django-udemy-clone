@@ -1,11 +1,12 @@
 pipeline {
   //  agent any
     
-       agent {
-        docker {
-            image 'aquasec/trivy:0.69.3'
-        }
+     agent {
+    docker {
+        image 'aquasec/trivy:0.69.3'
+        args '--entrypoint=""'
     }
+}
     
     environment {
         APP_PATH = '/var/www/tummoc'
