@@ -56,6 +56,7 @@ stage('trivy fs scan') {
               -v /var/run/docker.sock:/var/run/docker.sock \
               -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/app \
               -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
+              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME/templates:/templates \
               -v /tmp/trivy-cache:/root/.cache/ \
               -w /app \
               aquasec/trivy:0.69.3 fs . \
