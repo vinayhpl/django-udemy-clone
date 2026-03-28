@@ -4,10 +4,10 @@
 
 #### 🧱 Tech Stack  ( Check files in Repo)
 Backend: Django (Python)  
-CI/CD: Jenkins (No Gitlab because takes 8GB+ RAM)  
+CI/CD: Jenkins (No Gitlab because it takes 8GB+ RAM)  
 Containerization: Docker & Docker Compose  (kubernetes is not in assignment)    
-IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account) 
-Webserver: Nginx + gunicorn
+IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance configuration is for real porjects) 
+Webserver: Nginx + gunicorn   
 Monitoring: Prometheus + Grafana  + Node Exporter  
 
 
@@ -17,15 +17,41 @@ Monitoring: Prometheus + Grafana  + Node Exporter
 
 #### CI/CD: Jenkins (No Gitlab because takes 8GB+ RAM)  
 * Jenkins run as docker container (not on host) with 4GB and 2 core (free tier)
-* [View Jenkinsfile] (https://github.com/vinayhpl/django-udemy-clone/blob/master/Jenkinsfile)) 
+* [View Jenkinsfile] (https://github.com/vinayhpl/django-udemy-clone/blob/master/Jenkinsfile))   
 
-## Home page
-<img src="screenshots/one.png" height="800">
+<img width="1501" height="545" alt="image" src="https://github.com/user-attachments/assets/4a410c69-5421-4594-9fb5-024fc5d97ebf" />
 
-## Course Details page
-<img src="screenshots/two.png" height="800">
 
-## Enrolled course details
-<img src="screenshots/three.png" height="800">
+#### Containerization: Docker & Docker Compose  (kubernetes is not in assignment)   
 
-Show your support by 🌟 the project!!
+[View Dockerfile] (https://github.com/vinayhpl/django-udemy-clone/blob/master/Dockerfile))  
+[View docker compose] (https://github.com/vinayhpl/django-udemy-clone/blob/master/docker-compose.yml))  
+
+
+#### IaC: Terraform =>  (Note: Free tier Account and instance configuration is for real porjects)  
+
+2 ec2 instannce + VPC   
+Note: Free tier Account and instance configuration is for real porjects
+Udemy clone app: t3.micro ( 2 cpu + 1GB RAM + 8GB volume)   
+Jenkins server: c7i-flex.large ( 2 CPU + 4GB RAM + 12GB volume)
+
+##### Webserver: Nginx + gunicorn
+
+Nginx to server domain tummoc.vinays.me  and reverse proxied to udemy app cont  
+gunicorn to server static along with whitenoise dependency and udemy clone django app   
+
+
+##### Monitoring: Prometheus + Grafana  + Node Exporter  
+
+Simple also good Moniter for udemy django and node cpu and RAM refer below screenshot
+
+<img width="1544" height="955" alt="image" src="https://github.com/user-attachments/assets/352c38db-cde7-4f2f-8517-8d0ac402806d" />
+
+
+
+<img width="1587" height="906" alt="image" src="https://github.com/user-attachments/assets/ca28781f-e49f-44d6-922b-348415cb4477" />
+
+
+
+
+
