@@ -46,33 +46,33 @@ pipeline {
             }
         }
 
-       stage('trivy fs scan') {
-    steps {
-        script {
-            sh '''
-            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+//        stage('trivy fs scan') {
+//     steps {
+//         script {
+//             sh '''
+//             echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
-            docker run --rm \
-              -v /var/run/docker.sock:/var/run/docker.sock \
-              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/app \
-              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
-              -v /tmp/trivy-cache:/root/.cache/ \
-              -w /app \
-              aquasec/trivy:0.69.3 fs . \
-              --scanners vuln \
-              --severity HIGH,CRITICAL \
-              --no-progress \
-              --format template \
-              --template "@contrib/html.tpl" \
-              -o /output/trivy-fs-report.html \
-              --exit-code 0
+//             docker run --rm \
+//               -v /var/run/docker.sock:/var/run/docker.sock \
+//               -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/app \
+//               -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
+//               -v /tmp/trivy-cache:/root/.cache/ \
+//               -w /app \
+//               aquasec/trivy:0.69.3 fs . \
+//               --scanners vuln \
+//               --severity HIGH,CRITICAL \
+//               --no-progress \
+//               --format template \
+//               --template "@contrib/html.tpl" \
+//               -o /output/trivy-fs-report.html \
+//               --exit-code 0
 
-            echo "=== Report Details ==="
-            ls -lh | grep trivy
-            '''
-        }
-    }
-}
+//             echo "=== Report Details ==="
+//             ls -lh | grep trivy
+//             '''
+//         }
+//     }
+// }
        
 
         stage('docker build') {
