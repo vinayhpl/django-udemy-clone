@@ -16,6 +16,7 @@ Monitoring: Prometheus + Grafana  + Node Exporter
 #### Backend: Django (Python)    
 * Open source Udemy clone project  
 * with sqlsite for data store  
+* gunicorn and whitenoise for app and static file serving  
 
 #### CI/CD: Jenkins (No Gitlab because takes 8GB+ RAM)  
 * Jenkins run as docker container (not on host) with 4GB and 2 core (free tier)
