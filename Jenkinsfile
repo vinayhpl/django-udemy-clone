@@ -64,6 +64,7 @@ stage('Check file access via Trivy container') {
         script {
             sh '''
             echo "=== Checking file access inside Trivy container ==="
+             ls -l
             docker run --rm \
               -v $(pwd):/app \
               -w /app \
