@@ -11,6 +11,8 @@ pipeline {
         IMAGE_NAME = 'udemy-clone'
         TAG = 'latest-demo'
         VERSION_TAG = "${BUILD_NUMBER}-${JOB_NAME}"
+        DOCKER_HOST= credentials('dock_host_path')
+        
     }
 
     stages {
@@ -60,24 +62,33 @@ pipeline {
 //         }
 //     }
 // }
-stage('Trivy Scan') {
-    agent {
-        docker {
-            image 'aquasec/trivy:0.69.3'
-            args '--entrypoint=""'
-        }
-    }
+       
+stage('trivy image scan') {
     steps {
-        sh '''
-        echo "=== Running Trivy FS Scan ==="
-        
-        mkdir -p /tmp/trivy-cache
-        
-        trivy fs . \
-          --cache-dir /tmp/trivy-cache \
-          --severity HIGH,CRITICAL \
-          --no-progress
-        '''
+        script {
+            sh '''
+            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+
+            echo "Workspace (container): $(pwd)"
+            echo "Workspace (host): $DOCKER_HOST/workspace/$JOB_NAME"
+
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v $DOCKER_HOST/workspace/$JOB_NAME:/output \
+              -v /tmp/trivy-cache:/root/.cache/ \
+              aquasec/trivy:0.69.3 image \
+              $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+              --severity HIGH,CRITICAL \
+              --no-progress \
+              --format template \
+              --template "@contrib/html.tpl" \
+              -o /output/trivy-image-report.html \
+              --exit-code 0
+
+            echo "Files in workspace:"
+            ls -l $DOCKER_HOST/workspace/$JOB_NAME
+            '''
+        }
     }
 }
 
