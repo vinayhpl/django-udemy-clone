@@ -55,6 +55,18 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 <img width="1587" height="906" alt="image" src="https://github.com/user-attachments/assets/ca28781f-e49f-44d6-922b-348415cb4477" />
 
 
+## 📋 Part 2: Self-Assessment
+
+| Tool / Area | Rating (1–5) | Comments / Example Projects |
+|-------------|-------------|-----------------------------|
+| CI/CD (GitHub Actions, Jenkins) | ⭐⭐⭐⭐☆ (4/5) | Built CI pipeline with lint, test, and Docker build |
+| Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django app with volumes and compose |
+| Kubernetes | ⭐⭐☆☆☆ (2/5) | Basic understanding of concepts and architecture |
+| Terraform / Ansible | ⭐⭐⭐☆☆ (3/5) | Created basic EC2 provisioning using Terraform |
+| AWS / GCP / Azure | ⭐⭐⭐☆☆ (3/5) | Deployed application on AWS EC2 |
+| Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | Set up Prometheus scraping and Grafana dashboards |
+| Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and collaboration |
+
 
 
 
