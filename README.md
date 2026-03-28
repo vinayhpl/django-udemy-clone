@@ -52,20 +52,20 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 
 
 
-<img width="1587" height="906" alt="image" src="https://github.com/user-attachments/assets/ca28781f-e49f-44d6-922b-348415cb4477" />
+<img width="1491" height="924" alt="image" src="https://github.com/user-attachments/assets/bca50a1e-e6d2-4aed-afd2-996bdb0d1f7c" />
 
 
 ## 📋 Part 2: Self-Assessment
 
 | Tool / Area | Rating (1–5) | Comments / Example Projects |
 |-------------|-------------|-----------------------------|
-| CI/CD (GitHub Actions, Jenkins) | ⭐⭐⭐⭐☆ (4/5) | Built CI pipeline with lint, test, and Docker build |
-| Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django app with volumes and compose |
-| Kubernetes | ⭐⭐☆☆☆ (2/5) | Basic understanding of concepts and architecture |
-| Terraform / Ansible | ⭐⭐⭐☆☆ (3/5) | Created basic EC2 provisioning using Terraform |
-| AWS / GCP / Azure | ⭐⭐⭐☆☆ (3/5) | Deployed application on AWS EC2 |
-| Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | Set up Prometheus scraping and Grafana dashboards |
-| Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and collaboration |
+| CI/CD (GitHub Actions, Jenkins) | ⭐⭐⭐⭐⭐ (5/5) | Good at Jenkins and Gitlab ( inc self hosted Gitlab) https://nncicd.kavinsoft.in/ |
+| Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django python app and react and next js also have knowledge on JAVA and maven |
+| Kubernetes | ⭐⭐☆☆☆ (4/5) | worked with K3s, Kubeadm, EKS |
+| Terraform / Ansible | ⭐⭐⭐☆☆ (3/5) | Can design best infra for project with Terraform |
+| AWS / Azure | ⭐⭐⭐☆☆ (4/5) | Good in AWS and managebale Azure services VM Vnet blob |
+| Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | Not for every project Promethes and grafana is required |
+| Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and team collaboration |
 
 
 
