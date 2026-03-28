@@ -60,19 +60,26 @@ pipeline {
 //         }
 //     }
 // }
-   stage('Trivy Scan') {
-            agent {
-                docker {
-                    image 'aquasec/trivy:0.69.3'
-                    args '--entrypoint=""'
-                }
-            }
-            steps {
-                sh '''
-                trivy fs .
-                '''
-            }
+stage('Trivy Scan') {
+    agent {
+        docker {
+            image 'aquasec/trivy:0.69.3'
+            args '--entrypoint=""'
         }
+    }
+    steps {
+        sh '''
+        echo "=== Running Trivy FS Scan ==="
+        
+        mkdir -p /tmp/trivy-cache
+        
+        trivy fs . \
+          --cache-dir /tmp/trivy-cache \
+          --severity HIGH,CRITICAL \
+          --no-progress
+        '''
+    }
+}
 
 
         stage('docker build') {
