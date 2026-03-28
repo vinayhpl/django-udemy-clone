@@ -71,13 +71,13 @@ stage('Check file access via Trivy container') {
              ls -ld  ${WORKSPACE}
 
              echo "$(pwd)"
-
+            
             docker run --rm \
-              -v $(pwd):/app \
+              -v /home/ubuntu/jenkins_home/workspace/udemyclone:/app \
               -w /app \
               --entrypoint /bin/sh \
               aquasec/trivy:0.69.3 \
-              -c "ls -l && echo '--- requirements.txt ---' && cat requirements.txt"
+              -c "ls -l && cat requirements.txt"
             '''
         }
     }
