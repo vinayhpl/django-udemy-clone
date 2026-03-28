@@ -59,8 +59,7 @@ pipeline {
 //         }
 //     }
 // }
-
-        stage('Check file access via Trivy container') {
+stage('Check file access via Trivy container') {
     steps {
         script {
             sh '''
@@ -68,13 +67,13 @@ pipeline {
             docker run --rm \
               -v $(pwd):/app \
               -w /app \
+              --entrypoint /bin/sh \
               aquasec/trivy:0.69.3 \
-              sh -c "ls -l && echo '--- requirements.txt ---' && cat requirements.txt"
+              -c "ls -l && echo '--- requirements.txt ---' && cat requirements.txt"
             '''
         }
     }
 }
-
 
         stage('docker build') {
             steps {
