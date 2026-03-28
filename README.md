@@ -6,7 +6,7 @@
 Backend: Django (Python)  
 CI/CD: Jenkins (No Gitlab because it takes 8GB+ RAM)  
 Containerization: Docker & Docker Compose  (kubernetes is not in assignment)    
-IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance configuration is for real porjects) 
+IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance configuration is not intended for real projects) 
 Webserver: Nginx + gunicorn   
 Monitoring: Prometheus + Grafana  + Node Exporter  
 
@@ -31,7 +31,7 @@ Monitoring: Prometheus + Grafana  + Node Exporter
 [View docker compose] (https://github.com/vinayhpl/django-udemy-clone/blob/master/docker-compose.yml))  
 
 
-#### IaC: Terraform =>  (Note: Free tier Account and instance configuration is not intended for real porjects)  
+#### IaC: Terraform =>  (Note: Free tier Account and instance configuration is not intended for real projects)  
 
 2 ec2 instannce + VPC   
 Note: Free tier Account and instance configuration is for real porjects
