@@ -63,7 +63,7 @@ pipeline {
 //     }
 // }
        
-stage('trivy image scan') {
+stage('trivy image2 scan') {
     steps {
         script {
             sh '''
