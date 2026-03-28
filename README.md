@@ -61,9 +61,9 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 |-------------|-------------|-----------------------------|
 | CI/CD (GitHub Actions, Jenkins) | ⭐⭐⭐⭐⭐ (5/5) | Good at Jenkins and Gitlab ( inc self hosted Gitlab) |
 | Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django python app and react and next js also have knowledge on JAVA and maven Peoject: Only NN Office Next and django app [NN doctors](https://doctors.narayananethralaya.org/doctors-nn1-rajaji-nagar) |
-| Kubernetes | ⭐⭐☆☆☆ (4/5) | worked with K3s, Kubeadm, EKS |
-| Terraform / Ansible | ⭐⭐⭐☆☆ (3/5) | Can design best infra for project with Terraform |
-| AWS / Azure | ⭐⭐⭐☆☆ (4/5) | Good in AWS and managebale Azure services VM Vnet blob |
+| Kubernetes | ⭐⭐⭐⭐☆ (4/5) | worked with K3s, Kubeadm, EKS |
+| Terraform / Ansible | ⭐⭐⭐⭐☆ (4/5) | Can design best infra for project with Terraform |
+| AWS / Azure | ⭐⭐⭐⭐☆ (4/5) | Good in AWS and managebale Azure services VM Vnet blob |
 | Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | Not for every project Promethes and grafana is required |
 | Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and team collaboration |
 | Wordpress | ⭐⭐⭐⭐⭐ (5/5) | Build websistes with WP, HTML, CSS, JS , PHP && **Deployed** Projects: https://www.narayananethralaya.org/ and https://kavintechcorp.in/mouna_wp/blogs/ and https://paakashala.com/ ( hero banner text changed by other company) rest all same |
