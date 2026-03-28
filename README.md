@@ -66,7 +66,7 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 | AWS / Azure | ⭐⭐⭐☆☆ (4/5) | Good in AWS and managebale Azure services VM Vnet blob |
 | Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | Not for every project Promethes and grafana is required |
 | Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and team collaboration |
-| wp | ⭐⭐⭐⭐⭐ (5/5) | can build any websistes with WP, HTML, CSS, JS && PHP Projects: https://www.narayananethralaya.org/ and https://kavintechcorp.in/mouna_wp/blogs/ and https://paakashala.com/ ( hero banner text changed by other company) rest all same |
+| wp | ⭐⭐⭐⭐⭐ (5/5) | can build any websistes with WP, HTML, CSS, JS , PHP && **Deployed** Projects: https://www.narayananethralaya.org/ and https://kavintechcorp.in/mouna_wp/blogs/ and https://paakashala.com/ ( hero banner text changed by other company) rest all same |
 
 
 
