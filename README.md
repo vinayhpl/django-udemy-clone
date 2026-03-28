@@ -66,7 +66,7 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 | AWS / Azure | ⭐⭐⭐⭐☆ (4/5) | Good in AWS and managebale Azure services VM Vnet blob |
 | Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | Not for every project Promethes and grafana is required |
 | Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and team collaboration |
-| Wordpress | ⭐⭐⭐⭐⭐ (5/5) | Build websistes with WP, HTML, CSS, JS , PHP && **Deployed** Projects:<br><br> https://www.narayananethralaya.org/ ,<br><br> https://kavintechcorp.in/mouna_wp/blogs ,<br><br> https://paakashala.com/ ( hero banner text changed by other company) rest all same <br><br> Bits pilani alumni build donate form with razorpay SDK, JS , PHP rahttps://atmanirbhar.org/index.php/indian-online-pay/#form |
+| Wordpress | ⭐⭐⭐⭐⭐ (5/5) | Build websistes with WP, HTML, CSS, JS , PHP && **Deployed** Projects:<br><br> https://www.narayananethralaya.org/ ,<br><br> https://kavintechcorp.in/mouna_wp/blogs ,<br><br> https://paakashala.com/ ( hero banner text changed by other company) rest all same <br><br> Bits pilani alumni build donate form with razorpay SDK, JS , PHP <br><br> https://atmanirbhar.org/index.php/indian-online-pay/#form |
 
 
 
