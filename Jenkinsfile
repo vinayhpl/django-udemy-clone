@@ -87,7 +87,7 @@ stage('trivy image2 scan') {
               --exit-code 0
 
             echo "Files in workspace:"
-            ls -l $DOCKER_JENKINS_HOME/workspace/$JOB_NAME
+            ls -l  # $DOCKER_JENKINS_HOME/workspace/$JOB_NAME
             '''
         }
     }
