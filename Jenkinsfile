@@ -15,64 +15,64 @@ pipeline {
         
     }
 
-    stages {
-        stage('checkout') {
-            steps {
-                // repo is not private for assignment view && no dev test, stag, prod branches 
-                 cleanWs()
-                git branch: 'master',  url: 'https://github.com/vinayhpl/django-udemy-clone.git'
-            }
-        }
-        stage('lint') {
-            steps {
-                script {
-                    def status = sh(
-                        script: '''
+       stages {
+           stage('checkout') {
+               steps {
+                   // repo is not private for assignment view && no dev test, stag, prod branches 
+                    cleanWs()
+                   git branch: 'master',  url: 'https://github.com/vinayhpl/django-udemy-clone.git'
+               }
+           }
+           stage('lint') {
+               steps {
+                   script {
+                       def status = sh(
+                           script: '''
+                           docker run --rm \
+                             -v $(pwd):/app \
+                             python:3.11-slim \
+                             sh -c "
+                               pip install flake8 && \
+                               flake8 /app --count --select=E9,F63,F7,F82 --show-source --statistics
+                             "
+                           ''',
+                           returnStatus: true
+                       )
+           
+                       if (status != 0) {
+                           unstable("Lint issues found")
+                       }
+                   }
+               }
+           }
+
+            stage('trivy fs scan') {
+                steps {
+                    script {
+                        sh '''
+                        echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+            
                         docker run --rm \
-                          -v $(pwd):/app \
-                          python:3.11-slim \
-                          sh -c "
-                            pip install flake8 && \
-                            flake8 /app --count --select=E9,F63,F7,F82 --show-source --statistics
-                          "
-                        ''',
-                        returnStatus: true
-                    )
-        
-                    if (status != 0) {
-                        unstable("Lint issues found")
+                          -v /var/run/docker.sock:/var/run/docker.sock \
+                          -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/app \
+                          -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
+                          -v /tmp/trivy-cache:/root/.cache/ \
+                          -w /app \
+                          aquasec/trivy:0.69.3 fs . \
+                          --scanners vuln \
+                          --severity HIGH,CRITICAL \
+                          --no-progress \
+                          --format template \
+                          --template "@/contrib/html.tpl" \
+                          -o /output/trivy-fs-report.html \
+                          --exit-code 0
+            
+                        echo "=== Report Details ==="
+                        ls -lh | grep trivy
+                        '''
                     }
                 }
             }
-        }
-
-stage('trivy fs scan') {
-    steps {
-        script {
-            sh '''
-            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-
-            docker run --rm \
-              -v /var/run/docker.sock:/var/run/docker.sock \
-              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/app \
-              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
-              -v /tmp/trivy-cache:/root/.cache/ \
-              -w /app \
-              aquasec/trivy:0.69.3 fs . \
-              --scanners vuln \
-              --severity HIGH,CRITICAL \
-              --no-progress \
-              --format template \
-              --template "@/contrib/html.tpl" \
-              -o /output/trivy-fs-report.html \
-              --exit-code 0
-
-            echo "=== Report Details ==="
-            ls -lh | grep trivy
-            '''
-        }
-    }
-}
        
 
         stage('docker build') {
@@ -130,10 +130,10 @@ stage('trivy fs scan') {
 
         stage('docker cleani') {
             steps {
-        sh """
-        docker rmi $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG || true
-        docker image prune -f
-        """
+              sh """
+              docker rmi $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG || true
+              docker image prune -f
+              """
             }
         }
 
