@@ -63,7 +63,7 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 | Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django python app and react and next js also have knowledge on JAVA and maven <br><br> Project: Deployed NN doctor profile Nextjs and django app [NN doctors](https://doctors.narayananethralaya.org/doctors-nn1-rajaji-nagar) |
 | Kubernetes | ⭐⭐⭐⭐☆ (4/5) | Deployed 2 projects with K3s, Kubeadm, EKS(due to cost reverted back to k3s) <br><br> Projects: https://sustainswitch.com/, <br><br> https://swasthya.kctest.kavinsoft.in/ |
 | Terraform / Ansible | ⭐⭐⭐⭐☆ (4/5) | Will Design best suited infra for project with Terraform |
-| AWS / Azure | ⭐⭐⭐⭐☆ (4/5) | Good in AWS and manageable Azure services VM Vnet blob  <br><br> planed for GCP/AZURE solution architect |
+| AWS / Azure | ⭐⭐⭐⭐☆ (4/5) | Good in AWS and used Azure services VM Vnet blob  <br><br> planed for GCP/AZURE solution architect |
 | Monitoring Tools (Prometheus, Grafana, ELK) | ⭐⭐⭐⭐☆ (4/5) | In our org Promethes and grafana is not used for monitering due to resource and cost but can setup with ease |
 | Git | ⭐⭐⭐⭐⭐ (5/5) | Daily usage for version control and team collaboration |
 | Built and Deployed Wordpress  projects| ⭐⭐⭐⭐⭐ (5/5) | Build websistes with WP, HTML, CSS, JS , PHP && **Deployed** Projects:<br><br> https://www.narayananethralaya.org/ ,<br><br> https://kavintechcorp.in/mouna_wp/blogs (Shop and Blogs) ,<br><br> https://paakashala.com/ <br><br>( hero banner text changed by other company) rest all same <br><br> (Only Donate and Razorpay form site was pre built) Bits pilani alumni donate form with razorpay SDK, JS , PHP <br><br> https://atmanirbhar.org/index.php/indian-online-pay/#form |
