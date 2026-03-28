@@ -45,25 +45,50 @@ pipeline {
                 }
             }
         }
-// stage('trivy fs scan') {
-//     steps {
-//         script {
-//             sh '''
-//             echo "=== Running Trivy FS Scan with Python support ==="
-//             docker run --rm \
-//               -v $(pwd):/app \
-//               -w /app \
-//               aquasec/trivy:0.69.3 fs . \
-//               --scanners vuln \
-//               --severity HIGH,CRITICAL \
-//               --db-repository mirror.gcr.io/aquasec/trivy-db:2 \
-//               --debug
-//             '''
-//         }
-//     }
-// }
+
+       stage('trivy fs scan') {
+    steps {
+        script {
+            sh '''
+            echo "=== Running Trivy FS Scan (HTML Report) ==="
+
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/app \
+              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
+              -v /tmp/trivy-cache:/root/.cache/ \
+              -w /app \
+              aquasec/trivy:0.69.3 fs . \
+              --scanners vuln \
+              --severity HIGH,CRITICAL \
+              --no-progress \
+              --format template \
+              --template "@contrib/html.tpl" \
+              -o /output/trivy-fs-report.html \
+              --exit-code 0
+
+            echo "=== Report Details ==="
+            ls -lh | grep trivy
+            '''
+        }
+    }
+}
        
-stage('trivy image2 scan') {
+
+        stage('docker build') {
+            steps {
+                script {
+                    sh '''
+                    echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
+                    DOCKER_BUILDKIT=1 docker build \
+                   -t $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
+                   -t $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG .
+                    '''
+                }
+            }
+        }
+        
+stage('trivy image scan') {
     steps {
         script {
             sh '''
@@ -86,48 +111,8 @@ stage('trivy image2 scan') {
               -o /output/trivy-image-report.html \
               --exit-code 0
 
-            echo "Files in workspace:"
-            ls -l  # $DOCKER_JENKINS_HOME/workspace/$JOB_NAME
-            '''
-        }
-    }
-}
-
-
-        stage('docker build') {
-            steps {
-                script {
-                    sh '''
-                    echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-                    DOCKER_BUILDKIT=1 docker build \
-                   -t $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
-                   -t $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG .
-                    '''
-                }
-            }
-        }
-        
-stage('trivy image scan') {
-    steps {
-        script {
-            sh '''
-            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
-
-            docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v /var/jenkins_home/workspace/udemyclone:/output \
-          -v /tmp/trivy-cache:/root/.cache/ \
-          aquasec/trivy:0.69.3 image \
-          $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
-          --scanners vuln \
-          --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
-          --no-progress \
-          --format template \
-          --template "@/contrib/html.tpl" \
-          -o /output/trivy-image-report.html
-
-            echo "Image scan output:"
-            ls -l "$PWD"
+            echo "=== Report Details ==="
+            ls -lh | grep trivy
             '''
         }
     }
