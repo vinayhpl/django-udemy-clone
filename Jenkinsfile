@@ -70,7 +70,7 @@ stage('trivy image2 scan') {
             echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
             echo "Workspace (container): $(pwd)"
-            echo "Workspace (host): $DOCKER_HOST/workspace/$JOB_NAME"
+            echo "Workspace (host): $DOCKER_JENKINS_HOME/workspace/$JOB_NAME"
 
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
