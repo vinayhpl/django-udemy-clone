@@ -27,6 +27,11 @@ INSTALLED_APPS = [
     'courses',
     'cart',
 ]
+try:
+    import django_prometheus
+    INSTALLED_APPS = ['django_prometheus'] + INSTALLED_APPS
+except ImportError:
+    pass
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -39,6 +44,11 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
+try:
+    import django_prometheus
+    INSTALLED_APPS = ['django_prometheus'] + INSTALLED_APPS
+except ImportError:
+    pass
 ROOT_URLCONF = 'udemyclone.urls'
 
 TEMPLATES = [
