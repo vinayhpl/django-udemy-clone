@@ -94,9 +94,6 @@ stage('trivy fs scan') {
                            sh '''
                            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
                
-                           echo "Workspace (container): $(pwd)"
-                           echo "Workspace (host): $DOCKER_JENKINS_HOME/workspace/$JOB_NAME"
-               
                            docker run --rm \
                              -v /var/run/docker.sock:/var/run/docker.sock \
                              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
