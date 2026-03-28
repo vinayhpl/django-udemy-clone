@@ -42,19 +42,34 @@ pipeline {
                 }
             }
         }
-stage('trivy fs scan') {
+// stage('trivy fs scan') {
+//     steps {
+//         script {
+//             sh '''
+//             echo "=== Running Trivy FS Scan with Python support ==="
+//             docker run --rm \
+//               -v $(pwd):/app \
+//               -w /app \
+//               aquasec/trivy:0.69.3 fs . \
+//               --scanners vuln \
+//               --severity HIGH,CRITICAL \
+//               --db-repository mirror.gcr.io/aquasec/trivy-db:2 \
+//               --debug
+//             '''
+//         }
+//     }
+// }
+
+        stage('Check file access via Trivy container') {
     steps {
         script {
             sh '''
-            echo "=== Running Trivy FS Scan with Python support ==="
+            echo "=== Checking file access inside Trivy container ==="
             docker run --rm \
               -v $(pwd):/app \
               -w /app \
-              aquasec/trivy:0.69.3 fs . \
-              --scanners vuln \
-              --severity HIGH,CRITICAL \
-              --db-repository mirror.gcr.io/aquasec/trivy-db:2 \
-              --debug
+              aquasec/trivy:0.69.3 \
+              sh -c "ls -l && echo '--- requirements.txt ---' && cat requirements.txt"
             '''
         }
     }
