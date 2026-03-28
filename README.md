@@ -60,8 +60,7 @@ Simple also good Moniter for udemy django and node cpu and RAM refer below scree
 | Tool / Area | Rating (1–5) | Comments / Example Projects |
 |-------------|-------------|-----------------------------|
 | CI/CD (GitHub Actions, Jenkins) | ⭐⭐⭐⭐⭐ (5/5) | Good at Jenkins and Gitlab ( inc self hosted Gitlab) |
-| Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django python app and react and next js also have knowledge on JAVA and maven 
-Project: Only NN Office Next and django app [NN doctors](https://doctors.narayananethralaya.org/doctors-nn1-rajaji-nagar) |
+| Docker | ⭐⭐⭐⭐⭐ (5/5) | Containerized Django python app and react and next js also have knowledge on JAVA and maven <br><br> Project: Only NN Office Next and django app [NN doctors](https://doctors.narayananethralaya.org/doctors-nn1-rajaji-nagar) |
 | Kubernetes | ⭐⭐⭐⭐☆ (4/5) | Deployed 2 projects with K3s, Kubeadm, EKS(due to cost reverted back to k3s) |
 | Terraform / Ansible | ⭐⭐⭐⭐☆ (4/5) | Can design best infra for project with Terraform |
 | AWS / Azure | ⭐⭐⭐⭐☆ (4/5) | Good in AWS and managebale Azure services VM Vnet blob |
