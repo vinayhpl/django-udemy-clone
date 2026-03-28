@@ -50,7 +50,7 @@ pipeline {
     steps {
         script {
             sh '''
-            echo "=== Running Trivy FS Scan (HTML Report) ==="
+            echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin
 
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
