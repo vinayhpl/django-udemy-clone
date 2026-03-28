@@ -130,7 +130,10 @@ stage('trivy fs scan') {
 
         stage('docker cleani') {
             steps {
-                sh 'docker image prune -f'
+        sh """
+        docker rmi $DOCKER_KEY_USR/$IMAGE_NAME:$VERSION_TAG || true
+        docker image prune -f
+        """
             }
         }
 
