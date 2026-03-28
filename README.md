@@ -6,7 +6,7 @@
 Backend: Django (Python)  
 CI/CD: Jenkins (No Gitlab because it takes 8GB+ RAM)  
 Containerization: Docker & Docker Compose  (kubernetes is not in assignment)    
-IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance configuration is not intended for real projects) 
+IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance configuration is not intended for real projects)   
 Webserver: Nginx + gunicorn   
 Monitoring: Prometheus + Grafana  + Node Exporter  
 
