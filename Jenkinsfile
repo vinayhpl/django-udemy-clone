@@ -11,7 +11,7 @@ pipeline {
         IMAGE_NAME = 'udemy-clone'
         TAG = 'latest-demo'
         VERSION_TAG = "${BUILD_NUMBER}-${JOB_NAME}"
-        DOCKER_HOST= credentials('dock_host_path')
+        DOCKER_JENKINS_HOME= credentials('dock_host_path')
         
     }
 
@@ -74,7 +74,7 @@ stage('trivy image2 scan') {
 
             docker run --rm \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              -v $DOCKER_HOST/workspace/$JOB_NAME:/output \
+              -v $DOCKER_JENKINS_HOME/workspace/$JOB_NAME:/output \
               -v /tmp/trivy-cache:/root/.cache/ \
               aquasec/trivy:0.69.3 image \
               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
