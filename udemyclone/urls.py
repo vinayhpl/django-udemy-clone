@@ -11,3 +11,9 @@ urlpatterns = [
     path('', include('udemy.urls')),
     path('', include('courses.urls')),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+try:
+    import django_prometheus
+    urlpatterns += [path('', include('django_prometheus.urls'))]
+except ImportError:
+    pass
