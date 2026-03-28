@@ -1,12 +1,6 @@
 pipeline {
-  //  agent any
+   agent any
     
-     agent {
-    docker {
-        image 'aquasec/trivy:0.69.3'
-        args '--entrypoint=""'
-    }
-}
     
     environment {
         APP_PATH = '/var/www/tummoc'
@@ -66,14 +60,21 @@ pipeline {
 //         }
 //     }
 // }
-stage('Trivy Scan') {
+   stage('Trivy Scan') {
+            agent {
+                docker {
+                    image 'aquasec/trivy:0.69.3'
+                    args '--entrypoint=""'
+                }
+            }
             steps {
                 sh '''
-                ls -l
                 trivy fs .
                 '''
             }
         }
+    }
+}
 
         stage('docker build') {
             steps {
