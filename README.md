@@ -38,13 +38,13 @@ Note: Free tier Account and instance configuration is for real porjects
 Udemy clone app: t3.micro ( 2 cpu + 1GB RAM + 8GB volume)   
 Jenkins server: c7i-flex.large ( 2 CPU + 4GB RAM + 12GB volume)
 
-##### Webserver: Nginx + gunicorn
+#### Webserver: Nginx + gunicorn
 
 Nginx to server domain tummoc.vinays.me  and reverse proxied to udemy app cont  
 gunicorn to server static along with whitenoise dependency and udemy clone django app   
 
 
-##### Monitoring: Prometheus + Grafana  + Node Exporter  
+#### Monitoring: Prometheus + Grafana  + Node Exporter  
 
 Simple also good Moniter for udemy django and node cpu and RAM refer below screenshot
 
