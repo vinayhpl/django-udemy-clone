@@ -78,7 +78,8 @@ stage('trivy image2 scan') {
               -v /tmp/trivy-cache:/root/.cache/ \
               aquasec/trivy:0.69.3 image \
               $DOCKER_KEY_USR/$IMAGE_NAME:$TAG \
-              --severity HIGH,CRITICAL \
+              --scanners vuln \
+              --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL \
               --no-progress \
               --format template \
               --template "@contrib/html.tpl" \
@@ -86,7 +87,7 @@ stage('trivy image2 scan') {
               --exit-code 0
 
             echo "Files in workspace:"
-            ls -l $DOCKER_HOST/workspace/$JOB_NAME
+            ls -l $DOCKER_JENKINS_HOME/workspace/$JOB_NAME
             '''
         }
     }
