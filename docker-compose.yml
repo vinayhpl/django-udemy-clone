@@ -1,0 +1,57 @@
+services:
+  tummoc-int:
+    image: ghcr.io/vinayhpl/udemy-clone:latest-demo
+    container_name: tummoc_interview_cont
+
+    ports:
+      - "8001:8000"
+
+    volumes:
+      - ./db.sqlite3:/app/db.sqlite3
+      - ./static:/app/static
+
+    env_file:
+      - .env
+
+    environment:
+      DJANGO_SETTINGS_MODULE: "udemyclone.settings"
+
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+
+volumes:
+  grafana_data:
