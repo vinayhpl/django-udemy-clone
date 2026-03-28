@@ -35,6 +35,30 @@ resource "aws_security_group" "this" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+  description = "Prometheus"
+  from_port   = 9090
+  to_port     = 9090
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+ingress {
+  description = "Grafana"
+  from_port   = 3000
+  to_port     = 3000
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+ingress {
+  description = "Node-exporter"
+  from_port   = 9100
+  to_port     = 9100
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -74,7 +98,7 @@ resource "aws_instance" "ram-4gb" {
   vpc_security_group_ids = [aws_security_group.this.id]
 
   root_block_device {
-    volume_size = 8
+    volume_size = 12
     volume_type = "gp3"
   }
 
