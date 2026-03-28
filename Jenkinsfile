@@ -65,6 +65,8 @@ stage('Check file access via Trivy container') {
             sh '''
             echo "=== Checking file access inside Trivy container ==="
              ls -l
+             ls -ld /var/jenkins_home/workspace/udemyclone
+
             docker run --rm \
               -v $(pwd):/app \
               -w /app \
