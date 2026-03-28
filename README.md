@@ -10,6 +10,8 @@ IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance co
 Webserver: Nginx + gunicorn   
 Monitoring: Prometheus + Grafana  + Node Exporter  
 
+<img width="997" height="935" alt="image" src="https://github.com/user-attachments/assets/b2a929fe-9d03-4dbe-b6e2-5dfda3ce163f" />
+
 
 #### Backend: Django (Python)    
 * Open source Udemy clone project  
