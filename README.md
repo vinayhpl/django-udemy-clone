@@ -5,7 +5,7 @@
 #### 🧱 Tech Stack  ( Check files in Repo)
 Backend: Django (Python)  
 CI/CD: Jenkins (No Gitlab because it takes 8GB+ RAM)  
-Containerization: Docker & Docker Compose  (kubernetes is not in assignment)    
+Containerization: Docker & Docker Compose  
 IaC: Terraform => 2 ec2 instannce + VPC (Note: Free tier Account and instance configuration is not intended for real projects)   
 Webserver: Nginx + gunicorn   
 Monitoring: Prometheus + Grafana  + Node Exporter  
@@ -25,7 +25,7 @@ Monitoring: Prometheus + Grafana  + Node Exporter
 <img width="1501" height="545" alt="image" src="https://github.com/user-attachments/assets/4a410c69-5421-4594-9fb5-024fc5d97ebf" />
 
 
-#### Containerization: Docker & Docker Compose  (kubernetes is not in assignment)   
+#### Containerization: Docker & Docker Compose  
 
 [View Dockerfile] (https://github.com/vinayhpl/django-udemy-clone/blob/master/Dockerfile))  
 [View docker compose] (https://github.com/vinayhpl/django-udemy-clone/blob/master/docker-compose.yml))  
