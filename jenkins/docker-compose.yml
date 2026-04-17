@@ -1,0 +1,30 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:latest  # or use the official jenkins image if you want
+    container_name: tummoc-jenkins
+      #environment:
+      # - JENKINS_OPTS="--httpListenAddress=0.0.0.0"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    group_add:
+      - "988" 
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/libexec/docker/cli-plugins:/usr/libexec/docker/cli-plugins
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=true -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Xms256m -Xmx768m -Duser.timezone=Asia/Kolkata
+    networks:
+      - jenkins_network
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
+    external: true
+
+networks:
+  jenkins_network:
+    external: true
